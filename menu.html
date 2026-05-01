@@ -5,43 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Crypto Miner Menu</title>
     <style>
-        body { margin: 0; background: #0d1117; color: white; font-family: sans-serif; text-align: center; }
-        .header { background: #161b22; padding: 20px; border-bottom: 2px solid #facc15; }
-        .balance-card { background: #1e293b; margin: 20px; padding: 25px; border-radius: 20px; border: 1px solid #334155; }
-        .balance-amount { font-size: 32px; color: #facc15; font-weight: bold; }
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        .menu-item { background: #161b22; padding: 20px; border-radius: 15px; border: 1px solid #334155; cursor: pointer; }
-        .menu-item:active { transform: scale(0.95); }
-        .icon { font-size: 30px; margin-bottom: 10px; }
+        body { margin: 0; background: #0d1117; color: white; font-family: sans-serif; text-align: center; -webkit-user-select: none; }
+        .header { background: #161b22; padding: 15px; border-bottom: 2px solid #ff0013; /* Красный цвет TRON */ }
+        
+        .balance-card { 
+            background: linear-gradient(145deg, #1e293b, #0f172a); 
+            margin: 20px; 
+            padding: 25px; 
+            border-radius: 20px; 
+            border: 1px solid #334155;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        
+        .balance-amount { font-size: 36px; color: #ff0013; font-weight: bold; text-shadow: 0 0 10px rgba(255, 0, 19, 0.3); }
+        .currency-label { font-size: 18px; color: #8b949e; margin-left: 5px; }
+
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 20px; }
+        .menu-item { 
+            background: #161b22; 
+            padding: 20px; 
+            border-radius: 18px; 
+            border: 1px solid #334155; 
+            transition: 0.2s;
+        }
+        .menu-item:active { transform: scale(0.92); background: #1c2128; }
+        .icon { font-size: 32px; margin-bottom: 10px; display: block; }
+        .menu-label { font-size: 14px; font-weight: 600; color: #cbd5e1; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h2 style="margin:0;">CRYPTO MINER</h2>
+        <h3 style="margin:0; letter-spacing: 1px;">TRON MINER HUB</h3>
     </div>
 
     <div class="balance-card">
-        <div style="color: #8b949e; margin-bottom: 5px;">Current Balance</div>
-        <div class="balance-amount">0.000054 BTC</div>
+        <div style="color: #8b949e; margin-bottom: 8px; font-size: 14px; text-transform: uppercase;">Total Balance</div>
+        <div class="balance-amount">0.00 <span class="currency-label">TRX</span></div>
     </div>
 
     <div class="menu-grid">
-        <div class="menu-item">
-            <div class="icon">⛏️</div>
-            <div>Mining</div>
+        <div class="menu-item" onclick="location.href='#'">
+            <span class="icon">⛏️</span>
+            <span class="menu-label">Mining</span>
         </div>
-        <div class="menu-item">
-            <div class="icon">📺</div>
-            <div>Ads (PTC)</div>
+        <div class="menu-item" onclick="location.href='#'">
+            <span class="icon">🚀</span>
+            <span class="menu-label">Boost</span>
         </div>
-        <div class="menu-item">
-            <div class="icon">👥</div>
-            <div>Friends</div>
+        <div class="menu-item" onclick="location.href='#'">
+            <span class="icon">👥</span>
+            <span class="menu-label">Frens</span>
         </div>
-        <div class="menu-item">
-            <div class="icon">💰</div>
-            <div>Wallet</div>
+        <div class="menu-item" onclick="location.href='#'">
+            <span class="icon">🎁</span>
+            <span class="menu-label">Tasks</span>
+        </div>
+        <div class="menu-item" onclick="location.href='#'">
+            <span class="icon">👛</span>
+            <span class="menu-label">Wallet</span>
+        </div>
+        <div class="menu-item" onclick="location.href='#'">
+            <span class="icon">⚙️</span>
+            <span class="menu-label">Settings</span>
         </div>
     </div>
 
