@@ -1,38 +1,114 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Crypto Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Crypto Miner</title>
     <style>
-        body { background-color: #0f172a; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .loader-bar { width: 80%; height: 10px; background: #334155; border-radius: 5px; margin-top: 20px; overflow: hidden; }
-        .progress { width: 0%; height: 100%; background: #f59e0b; transition: width 0.1s; }
-        .btn { display: none; background: #f59e0b; color: black; padding: 15px 30px; border-radius: 10px; font-weight: bold; text-decoration: none; margin-top: 20px; }
-        img { width: 150px; }
+        /* СТИЛИ ЗАГРУЗКИ */
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #0d1117;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999; /* Поверх всего */
+            transition: opacity 0.5s ease;
+        }
+
+        .coin {
+            width: 100px; height: 100px;
+            background: radial-gradient(circle, #facc15 0%, #a16207 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            color: white;
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.5);
+            animation: spin 3s infinite linear;
+            margin-bottom: 30px;
+        }
+
+        @keyframes spin {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        .progress-container {
+            width: 70%; height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%; height: 100%;
+            background: #facc15;
+            box-shadow: 0 0 10px #facc15;
+        }
+
+        .loading-text {
+            margin-top: 15px;
+            color: #facc15;
+            font-family: sans-serif;
+            font-size: 14px;
+        }
+
+        /* СТИЛИ ТВОЕЙ ИГРЫ (Скрыта пока идет загрузка) */
+        #game-content {
+            display: none; 
+            text-align: center;
+            padding-top: 50px;
+            color: white;
+            font-family: sans-serif;
+        }
     </style>
 </head>
-<body>
-    <img src="https://via.placeholder.com/150" alt="Logo"> <h2 id="status">Preparing game assets...</h2>
-    <div class="loader-bar"><div id="progress" class="progress"></div></div>
-    <a href="#" class="btn" id="start-btn">ENTER GAME</a>
+<body style="margin:0; background-color: #0d1117;">
+
+    <div id="loading-screen">
+        <div class="coin">₿</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="bar"></div>
+        </div>
+        <div class="loading-text" id="status">Loading Game... 0%</div>
+    </div>
+
+    <div id="game-content">
+        <h1>CRYPTO MINER</h1>
+        <p>Добро пожаловать в игру!</p>
+        <button style="padding: 15px 30px; background: #facc15; border: none; border-radius: 10px; font-weight: bold;">
+            START MINING
+        </button>
+    </div>
 
     <script>
-        let prog = 0;
-        let pBar = document.getElementById('progress');
-        let statusText = document.getElementById('status');
-        let btn = document.getElementById('start-btn');
+        const bar = document.getElementById('bar');
+        const status = document.getElementById('status');
+        const loader = document.getElementById('loading-screen');
+        const game = document.getElementById('game-content');
 
-        let interval = setInterval(() => {
-            prog += Math.random() * 5;
-            if (prog >= 100) {
-                prog = 100;
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 1;
+            bar.style.width = progress + "%";
+            status.innerText = `Loading Game... ${progress}%`;
+
+            if (progress >= 100) {
                 clearInterval(interval);
-                statusText.innerText = "Ready to Earn!";
-                btn.style.display = "block";
+                
+                // Скрываем загрузку и показываем игру
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    game.style.display = 'block';
+                }, 500);
             }
-            pBar.style.width = prog + "%";
-        }, 100);
+        }, 50); // 50мс * 100 шагов = 5000мс (5 секунд)
     </script>
 </body>
 </html>
