@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Crypto Game</title>
+    <style>
+        body { background-color: #0f172a; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .loader-bar { width: 80%; height: 10px; background: #334155; border-radius: 5px; margin-top: 20px; overflow: hidden; }
+        .progress { width: 0%; height: 100%; background: #f59e0b; transition: width 0.1s; }
+        .btn { display: none; background: #f59e0b; color: black; padding: 15px 30px; border-radius: 10px; font-weight: bold; text-decoration: none; margin-top: 20px; }
+        img { width: 150px; }
+    </style>
+</head>
+<body>
+    <img src="https://via.placeholder.com/150" alt="Logo"> <h2 id="status">Preparing game assets...</h2>
+    <div class="loader-bar"><div id="progress" class="progress"></div></div>
+    <a href="#" class="btn" id="start-btn">ENTER GAME</a>
+
+    <script>
+        let prog = 0;
+        let pBar = document.getElementById('progress');
+        let statusText = document.getElementById('status');
+        let btn = document.getElementById('start-btn');
+
+        let interval = setInterval(() => {
+            prog += Math.random() * 5;
+            if (prog >= 100) {
+                prog = 100;
+                clearInterval(interval);
+                statusText.innerText = "Ready to Earn!";
+                btn.style.display = "block";
+            }
+            pBar.style.width = prog + "%";
+        }, 100);
+    </script>
+</body>
+</html>
