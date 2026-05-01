@@ -5,31 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Loading...</title>
     <style>
-        body { margin: 0; background: #0d1117; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; color: #facc15; font-family: sans-serif; }
-        .coin { width: 100px; height: 100px; background: radial-gradient(circle, #facc15 0%, #a16207 100%); border-radius: 50%; box-shadow: 0 0 20px #facc1566; animation: spin 3s infinite linear; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; font-size: 50px; color: white; }
-        @keyframes spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
-        .progress-container { width: 70%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; }
-        .progress-bar { width: 0%; height: 100%; background: #facc15; box-shadow: 0 0 15px #facc15; }
+        body { margin: 0; background-color: #0d1117; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; color: #facc15; font-family: sans-serif; overflow: hidden; }
+        
+        /* Логотип как на скрине 6346 */
+        .logo-container { margin-bottom: 30px; position: relative; }
+        .logo { width: 100px; height: 100px; border: 4px double #facc15; display: flex; align-items: center; justify-content: center; transform: rotate(45deg); box-shadow: 0 0 20px rgba(250, 204, 21, 0.2); }
+        .logo span { transform: rotate(-45deg); font-size: 40px; font-weight: bold; }
+
+        .loading-text { font-size: 22px; margin-bottom: 20px; letter-spacing: 1px; }
+
+        /* Полоска загрузки */
+        .progress-container { width: 80%; max-width: 300px; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; }
+        .progress-bar { width: 0%; height: 100%; background: #facc15; box-shadow: 0 0 15px #facc15; transition: width 0.03s linear; }
+        
+        .percent-text { margin-top: 10px; font-size: 14px; color: #8b949e; }
     </style>
 </head>
 <body>
-    <div class="coin">₿</div>
-    <div class="progress-container"><div class="progress-bar" id="bar"></div></div>
-    <p id="status" style="margin-top: 20px;">Loading... 0%</p>
+
+    <div class="logo-container">
+        <div class="logo"><span>₿</span></div>
+    </div>
+
+    <div class="loading-text">Loading Game...</div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="bar"></div>
+    </div>
+
+    <div class="percent-text" id="percent">0%</div>
 
     <script>
-        let prg = 0;
-        const b = document.getElementById('bar');
-        const s = document.getElementById('status');
-        const i = setInterval(() => {
-            prg++;
-            b.style.width = prg + "%";
-            s.innerText = "Loading... " + prg + "%";
-            if (prg >= 100) {
-                clearInterval(i);
-                window.location.href = "menu.html"; // Переход на файл меню
+        const bar = document.getElementById('bar');
+        const percentText = document.getElementById('percent');
+        
+        let progress = 0;
+        // 3000мс (3 сек) / 100 шагов = 30мс на каждый процент
+        const timer = setInterval(() => {
+            progress++;
+            
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(timer);
+                // После завершения переходим в меню
+                setTimeout(() => {
+                    window.location.href = "menu.html"; 
+                }, 200);
             }
-        }, 50);
+
+            bar.style.width = progress + "%";
+            percentText.innerText = progress + "%";
+
+        }, 30); // 30 миллисекунд = итого 3 секунды загрузки
     </script>
 </body>
 </html>
