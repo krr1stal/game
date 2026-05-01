@@ -1,4 +1,4 @@
-<!<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -7,21 +7,29 @@
     <style>
         body { margin: 0; background-color: #1a1613; color: white; font-family: 'Courier New', Courier, monospace; text-align: center; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        /* Верхняя панель без ID */
         .header { padding: 15px 20px; font-weight: bold; color: #facc15; font-size: 18px; text-align: left; }
         
-        /* Баланс */
         .balance-container { background: rgba(0, 0, 0, 0.4); margin: 10px 20px; padding: 15px; border-radius: 10px; border: 2px solid #3d2b1f; display: flex; justify-content: space-between; align-items: center; }
         .label { color: #facc15; font-size: 16px; }
         .amount { color: #ffffff; font-size: 20px; font-weight: bold; }
 
-        /* Игровая зона без боковых кнопок */
         .game-area { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
         .collect-btn { background: #facc15; color: #1a1613; border: none; padding: 15px 40px; border-radius: 10px; font-weight: bold; font-size: 18px; cursor: pointer; box-shadow: 0 4px 0 #a16207; margin-top: 20px; }
-        .collect-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #a16207; }
 
-        /* Нижнее меню: только Home и Wallet */
+        /* ОКНО РЕКЛАМЫ */
+        #ad-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .ad-timer { color: #facc15; font-size: 24px; margin-top: 20px; }
+
         .nav-bar { background: #000; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #333; }
         .nav-item { color: #8b949e; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; width: 50%; }
         .nav-item.active { color: #facc15; }
@@ -29,6 +37,13 @@
     </style>
 </head>
 <body>
+
+    <div id="ad-overlay">
+        <div style="font-size: 50px;">📺</div>
+        <h3>ADVERTISING</h3>
+        <p>Reward in:</p>
+        <div class="ad-timer" id="ad-timer">5</div>
+    </div>
 
     <div class="header">Crypto Miner</div>
 
@@ -38,11 +53,9 @@
     </div>
 
     <div class="game-area">
-        <div style="font-size: 110px; filter: drop-shadow(0 0 15px rgba(250,204,21,0.2));">⛏️</div>
-        
+        <div style="font-size: 110px;">⛏️</div>
         <p style="color: #facc15; font-weight: bold; margin-top: 20px;">Mining in progress...</p>
-        
-        <button class="collect-btn" onclick="collectCoins()">Collect 10 Coins</button>
+        <button class="collect-btn" onclick="showAd()">Collect 10 Coins</button>
     </div>
 
     <div class="nav-bar">
@@ -52,13 +65,35 @@
 
     <script>
         let coins = 230;
-        function collectCoins() {
+        const adOverlay = document.getElementById('ad-overlay');
+        const adTimerText = document.getElementById('ad-timer');
+
+        function showAd() {
+            // Показываем рекламу
+            adOverlay.style.display = 'flex';
+            let timeLeft = 5; // Длительность рекламы в секундах
+            adTimerText.innerText = timeLeft;
+
+            const countdown = setInterval(() => {
+                timeLeft--;
+                adTimerText.innerText = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    closeAd();
+                }
+            }, 1000);
+        }
+
+        function closeAd() {
+            adOverlay.style.display = 'none';
+            addCoins();
+        }
+
+        function addCoins() {
             coins += 10;
             document.getElementById('balance').innerText = coins + " Coins";
-            
-            const btn = document.querySelector('.collect-btn');
-            btn.style.backgroundColor = "#fff";
-            setTimeout(() => { btn.style.backgroundColor = "#facc15"; }, 100);
+            alert("Reward collected: +10 Coins!");
         }
     </script>
 
