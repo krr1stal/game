@@ -122,25 +122,157 @@
                 adTimerText.innerText = timeLeft;
 
                 if (timeLeft <= 0) {
+                    clearInterval(countdown<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Crypto Miner</title>
+    <style>
+        body { 
+            margin: 0; 
+            background-color: #1a1613; 
+            color: white; 
+            font-family: 'Courier New', Courier, monospace; 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow: hidden; 
+            -webkit-user-select: none;
+        }
+        
+        /* Верхняя панель */
+        .header { padding: 15px 20px; font-weight: bold; color: #facc15; font-size: 18px; text-align: left; }
+        
+        /* Баланс */
+        .balance-container { 
+            background: rgba(0, 0, 0, 0.4); 
+            margin: 10px 20px; 
+            padding: 15px; 
+            border-radius: 10px; 
+            border: 2px solid #3d2b1f; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .label { color: #facc15; font-size: 16px; }
+        .amount { color: #ffffff; font-size: 20px; font-weight: bold; }
+
+        /* Игровая зона */
+        .game-area { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        /* Кнопка сбора */
+        .collect-btn { 
+            background: #facc15; 
+            color: #1a1613; 
+            border: none; 
+            padding: 15px 40px; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            font-size: 18px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 0 #a16207; 
+            margin-top: 20px; 
+            transition: transform 0.1s;
+        }
+        .collect-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #a16207; }
+
+        /* Рекламный экран */
+        #ad-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98);
+            z-index: 1000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .ad-timer { color: #facc15; font-size: 30px; margin-top: 20px; font-weight: bold; }
+
+        /* Нижнее меню */
+        .nav-bar { background: #000; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #333; }
+        .nav-item { color: #8b949e; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; width: 50%; }
+        .nav-item.active { color: #facc15; }
+        .nav-icon { font-size: 24px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <div id="ad-overlay">
+        <div style="font-size: 60px;">📺</div>
+        <h2 style="color: #facc15;">ADVERTISING</h2>
+        
+        <div style="margin: 20px 0; min-height: 50px;">
+            <iframe data-aa='YOUR_ID' src='//ad.a-ads.com/YOUR_ID?size=320x50' style='width:320px; height:50px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
+        </div>
+        
+        <p>Wait for your reward...</p>
+        <div class="ad-timer" id="ad-timer">5</div>
+    </div>
+
+    <div class="header">Crypto Miner</div>
+
+    <div class="balance-container">
+        <span class="label">Balance</span>
+        <span class="amount" id="balance">0 Coins</span>
+    </div>
+
+    <div class="game-area">
+        <div style="font-size: 110px; filter: drop-shadow(0 0 15px rgba(250,204,21,0.2));">⛏️</div>
+        <p style="color: #facc15; font-weight: bold; margin-top: 20px;">Mining in progress...</p>
+        <button id="collect-trigger" class="collect-btn" onclick="showAd()">Collect 25 Coins</button>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-item active"><span class="nav-icon">🏠</span>Home</div>
+        <div class="nav-item"><span class="nav-icon">👛</span>Wallet</div>
+    </div>
+
+    <script>
+        let coins = Number(localStorage.getItem('miner_balance')) || 0;
+        
+        const balanceDisplay = document.getElementById('balance');
+        const adOverlay = document.getElementById('ad-overlay');
+        const adTimerText = document.getElementById('ad-timer');
+        const collectBtn = document.getElementById('collect-trigger');
+
+        balanceDisplay.innerText = coins + " Coins";
+
+        function showAd() {
+            // Отключаем кнопку, чтобы не кликали дважды
+            collectBtn.disabled = true;
+            collectBtn.style.opacity = "0.5";
+
+            adOverlay.style.display = 'flex';
+            let timeLeft = 7; // Поставь 7 секунд, чтобы реклама успела прогрузиться
+            adTimerText.innerText = timeLeft;
+
+            const countdown = setInterval(() => {
+                timeLeft--;
+                adTimerText.innerText = timeLeft;
+
+                if (timeLeft <= 0) {
                     clearInterval(countdown);
                     adOverlay.style.display = 'none';
                     addCoins();
+                    
+                    // Включаем кнопку обратно через 3 секунды после закрытия рекламы (кулдаун)
+                    setTimeout(() => {
+                        collectBtn.disabled = false;
+                        collectBtn.style.opacity = "1";
+                    }, 3000);
                 }
             }, 1000);
         }
 
         function addCoins() {
-            // Прибавляем 25 монет
             coins += 25;
-            
-            // Обновляем текст на экране
             balanceDisplay.innerText = coins + " Coins";
-            
-            // СОХРАНЯЕМ В ПАМЯТЬ ТЕЛЕФОНА
             localStorage.setItem('miner_balance', coins);
         }
     </script>
 
 </body>
 </html>
->
