@@ -13,64 +13,95 @@
             -webkit-user-select: none;
         }
         .header { padding: 15px 20px; font-weight: bold; color: #facc15; font-size: 18px; text-align: left; }
+        
         .balance-container { 
-            background: rgba(0, 0, 0, 0.4); margin: 10px 20px; padding: 15px; 
+            background: rgba(0, 0, 0, 0.4); margin: 5px 20px; padding: 12px; 
             border-radius: 10px; border: 2px solid #3d2b1f; 
             display: flex; justify-content: space-between; align-items: center; 
         }
         .amount { color: #ffffff; font-size: 20px; font-weight: bold; }
-        .game-area { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+        /* ИГРОВАЯ ЗОНА (ПОДНЯТА ВЫШЕ) */
+        .game-area { 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding-bottom: 20px; /* Отступ снизу для баннера */
+        }
+        
+        .pickaxe { font-size: 100px; margin-bottom: 10px; filter: drop-shadow(0 0 15px rgba(250,204,21,0.2)); }
+
         .collect-btn { 
             background: #facc15; color: #1a1613; border: none; padding: 15px 40px; 
             border-radius: 10px; font-weight: bold; font-size: 18px; cursor: pointer; 
-            box-shadow: 0 4px 0 #a16207; margin-top: 20px; transition: transform 0.1s;
+            box-shadow: 0 4px 0 #a16207; transition: transform 0.1s;
         }
         .collect-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #a16207; }
         .collect-btn:disabled { background: #555; box-shadow: none; color: #888; cursor: not-allowed; }
-        
+
+        /* ПОЗИЦИЯ 3: ПОСТОЯННЫЙ БАННЕР */
+        .banner-area {
+            width: 100%;
+            min-height: 60px;
+            background: rgba(0,0,0,0.2);
+            padding: 5px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* НИЖНЕЕ МЕНЮ (ПОЗИЦИИ 1 И 2) */
+        .nav-bar { background: #000; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #333; }
+        .nav-item { color: #8b949e; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; width: 50%; cursor: pointer; }
+        .nav-item.active { color: #facc15; }
+        .nav-icon { font-size: 22px; margin-bottom: 3px; }
+
+        /* ОКЛАДКА РЕКЛАМЫ (REWARDED) */
         #ad-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.98); z-index: 1000;
             flex-direction: column; align-items: center; justify-content: center;
         }
-        .ad-timer { color: #facc15; font-size: 30px; margin-top: 20px; font-weight: bold; }
-
-        /* СТИЛИ КНОПОК МЕНЮ */
-        .nav-bar { background: #000; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #333; }
-        .nav-item { color: #8b949e; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; width: 50%; cursor: pointer; }
-        .nav-item.active { color: #facc15; }
-        .nav-icon { font-size: 24px; margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
     <div id="ad-overlay">
-        <div style="font-size: 50px;">💎</div>
-        <h2 id="ad-status" style="color: #facc15; margin: 10px 0;">VERIFYING...</h2>
-        
-        <div id="ad-wrapper" style="width: 300px; height: 250px; margin: 15px 0; background: #000; overflow: hidden;">
+        <div style="font-size: 40px;">💎</div>
+        <h2 id="ad-status" style="color: #facc15; margin: 10px 0; font-size: 18px;">VERIFYING...</h2>
+        <div style="width: 300px; height: 250px; background: #000; margin: 10px 0;">
             <iframe id="ad-frame" data-aa='2436645' src='https://acceptable.a-ads.com/2436645/?size=300x250'
-                    style='border:0; padding:0; width:300px; height:250px; display: block;'>
-            </iframe>
+                    style='border:0; padding:0; width:300px; height:250px; display: block;'></iframe>
         </div>
-
-        <p>Mining... wait <span id="ad-timer" class="ad-timer">10</span>s</p>
+        <p style="font-size: 14px;">Please wait <span id="ad-timer" style="color:#facc15; font-weight:bold;">10</span>s</p>
     </div>
 
     <div class="header">Crypto Miner</div>
+
     <div class="balance-container">
         <span style="color: #facc15;">Balance</span>
         <span class="amount" id="balance">0 Coins</span>
     </div>
 
     <div class="game-area">
-        <div style="font-size: 110px; filter: drop-shadow(0 0 15px rgba(250,204,21,0.2));">⛏️</div>
+        <div class="pickaxe">⛏️</div>
         <button id="collect-btn" class="collect-btn" onclick="showAd()">Collect 25 Coins</button>
     </div>
 
+    <div class="banner-area">
+        <iframe data-aa='2436645' src='https://acceptable.a-ads.com/2436645/?size=Adaptive' 
+                style='border:0; padding:0; width:100%; height:60px; overflow:hidden; background-color: transparent;'></iframe>
+    </div>
+
     <div class="nav-bar">
-        <div class="nav-item active"><span class="nav-icon">🏠</span>Home</div>
-        <div class="nav-item" onclick="alert('Wallet coming soon!')"><span class="nav-icon">👛</span>Wallet</div>
+        <div class="nav-item active" onclick="location.reload()">
+            <span class="nav-icon">🏠</span>Home
+        </div>
+        <div class="nav-item" onclick="alert('Wallet coming soon!')">
+            <span class="nav-icon">👛</span>Wallet
+        </div>
     </div>
 
     <script>
@@ -82,11 +113,10 @@
         const adTimerText = document.getElementById('ad-timer');
         const collectBtn = document.getElementById('collect-btn');
         const adStatus = document.getElementById('ad-status');
-        const adFrame = document.getElementById('ad-frame');
 
         balanceDisplay.innerText = coins + " Coins";
 
-        // Проверка связи с доменом рекламы (пингуем favicon)
+        // Проверка AdGuard DNS через пинг сервера рекламы
         async function verifyAdConnection() {
             try {
                 const response = await fetch('https://acceptable.a-ads.com/favicon.ico', { 
@@ -104,19 +134,17 @@
             adOverlay.style.display = 'flex';
             canEarn = false; 
             
-            adStatus.innerText = "VERIFYING CONNECTION...";
+            adStatus.innerText = "CHECKING CONNECTION...";
             adStatus.style.color = "#facc15";
-
-            adFrame.src = adFrame.src.split('&')[0] + '&r=' + Math.random();
 
             const isConnected = await verifyAdConnection();
 
             if (isConnected) {
-                adStatus.innerText = "CONNECTION OK ✅";
+                adStatus.innerText = "AD LOADED ✅";
                 adStatus.style.color = "#00ff00";
                 canEarn = true; 
             } else {
-                adStatus.innerText = "ADGUARD DETECTED! ❌";
+                adStatus.innerText = "ADBLOCK DETECTED! ❌";
                 adStatus.style.color = "#ff4444";
                 canEarn = false; 
             }
@@ -135,7 +163,7 @@
                     if (canEarn) {
                         addCoins();
                     } else {
-                        alert("FAILED: Ad server unreachable. Reward cancelled.");
+                        alert("Reward blocked! Disable AdGuard to earn coins.");
                     }
                     
                     setTimeout(() => { collectBtn.disabled = false; }, 2000);
@@ -151,4 +179,5 @@
     </script>
 </body>
 </html>
+
 
