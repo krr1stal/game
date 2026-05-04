@@ -18,7 +18,6 @@
             border-radius: 10px; border: 2px solid #3d2b1f; 
             display: flex; justify-content: space-between; align-items: center; 
         }
-        .label { color: #facc15; font-size: 16px; }
         .amount { color: #ffffff; font-size: 20px; font-weight: bold; }
         .game-area { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .collect-btn { 
@@ -35,8 +34,10 @@
             flex-direction: column; align-items: center; justify-content: center;
         }
         .ad-timer { color: #facc15; font-size: 30px; margin-top: 20px; font-weight: bold; }
+
+        /* СТИЛИ КНОПОК МЕНЮ */
         .nav-bar { background: #000; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #333; }
-        .nav-item { color: #8b949e; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; width: 50%; }
+        .nav-item { color: #8b949e; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; width: 50%; cursor: pointer; }
         .nav-item.active { color: #facc15; }
         .nav-icon { font-size: 24px; margin-bottom: 4px; }
     </style>
@@ -45,27 +46,25 @@
 
     <div id="ad-overlay">
         <div style="font-size: 50px;">💎</div>
-        <h2 id="ad-status" style="color: #facc15; margin: 10px 0;">LOADING REWARD...</h2>
+        <h2 id="ad-status" style="color: #facc15; margin: 10px 0;">VERIFYING...</h2>
         
-        <div id="ad-wrapper" style="margin: 15px 0; min-height: 250px; background: #000; display: flex; align-items: center; justify-content: center;">
-            <iframe id="ad-frame" data-aa='YOUR_ID' src='https://ad.a-ads.com/YOUR_ID?size=300x250' 
-                    style='width:300px; height:250px; border:0px; padding:0; overflow:hidden; background-color: transparent;'>
+        <div id="ad-wrapper" style="width: 300px; height: 250px; margin: 15px 0; background: #000; overflow: hidden;">
+            <iframe id="ad-frame" data-aa='2436645' src='https://acceptable.a-ads.com/2436645/?size=300x250'
+                    style='border:0; padding:0; width:300px; height:250px; display: block;'>
             </iframe>
         </div>
 
-        <p id="ad-hint">Mining... wait <span id="ad-timer" style="color:#facc15">10</span>s</p>
+        <p>Mining... wait <span id="ad-timer" class="ad-timer">10</span>s</p>
     </div>
 
     <div class="header">Crypto Miner</div>
-
     <div class="balance-container">
-        <span class="label">Balance</span>
+        <span style="color: #facc15;">Balance</span>
         <span class="amount" id="balance">0 Coins</span>
     </div>
 
     <div class="game-area">
         <div style="font-size: 110px; filter: drop-shadow(0 0 15px rgba(250,204,21,0.2));">⛏️</div>
-        <p style="color: #facc15; font-weight: bold; margin-top: 20px;">Mining in progress...</p>
         <button id="collect-btn" class="collect-btn" onclick="showAd()">Collect 25 Coins</button>
     </div>
 
@@ -76,8 +75,8 @@
 
     <script>
         let coins = Number(localStorage.getItem('miner_balance')) || 0;
-        let isAdBlocked = true; 
-        
+        let canEarn = false; 
+
         const balanceDisplay = document.getElementById('balance');
         const adOverlay = document.getElementById('ad-overlay');
         const adTimerText = document.getElementById('ad-timer');
@@ -87,41 +86,43 @@
 
         balanceDisplay.innerText = coins + " Coins";
 
-        function showAd() {
+        // Проверка связи с доменом рекламы (пингуем favicon)
+        async function verifyAdConnection() {
+            try {
+                const response = await fetch('https://acceptable.a-ads.com/favicon.ico', { 
+                    mode: 'no-cors', 
+                    cache: 'no-store' 
+                });
+                return true; 
+            } catch (err) {
+                return false; 
+            }
+        }
+
+        async function showAd() {
             collectBtn.disabled = true;
             adOverlay.style.display = 'flex';
-            isAdBlocked = true; 
+            canEarn = false; 
             
-            // Перезагружаем фрейм для новой проверки
-            adFrame.src = adFrame.src;
-            
+            adStatus.innerText = "VERIFYING CONNECTION...";
+            adStatus.style.color = "#facc15";
+
+            adFrame.src = adFrame.src.split('&')[0] + '&r=' + Math.random();
+
+            const isConnected = await verifyAdConnection();
+
+            if (isConnected) {
+                adStatus.innerText = "CONNECTION OK ✅";
+                adStatus.style.color = "#00ff00";
+                canEarn = true; 
+            } else {
+                adStatus.innerText = "ADGUARD DETECTED! ❌";
+                adStatus.style.color = "#ff4444";
+                canEarn = false; 
+            }
+
             let timeLeft = 10;
             adTimerText.innerText = timeLeft;
-
-            const checkInterval = setInterval(() => {
-                const frame = document.getElementById('ad-frame');
-                
-                // ДВОЙНАЯ ПРОВЕРКА: высота + попытка доступа (Cross-Origin)
-                let accessible = true;
-                try {
-                    // Если AdGuard подменил страницу на свою, мы сможем прочитать её адрес
-                    let test = frame.contentWindow.location.href;
-                    accessible = true; 
-                } catch (e) {
-                    // Если там РЕАЛЬНАЯ реклама (другой домен), браузер выдаст ошибку доступа
-                    accessible = false; 
-                }
-
-                if (frame && frame.offsetHeight > 10 && !accessible) {
-                    isAdBlocked = false; 
-                    adStatus.innerText = "AD APPROVED ✅";
-                    adStatus.style.color = "#00ff00";
-                } else {
-                    isAdBlocked = true;
-                    adStatus.innerText = "ADBLOCK DETECTED!";
-                    adStatus.style.color = "#ff4444";
-                }
-            }, 500);
 
             const countdown = setInterval(() => {
                 timeLeft--;
@@ -129,19 +130,15 @@
 
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
-                    clearInterval(checkInterval);
                     adOverlay.style.display = 'none';
 
-                    if (isAdBlocked) {
-                        alert("No coins! AdGuard DNS detected.");
-                        collectBtn.disabled = false;
-                    } else {
+                    if (canEarn) {
                         addCoins();
-                        setTimeout(() => { collectBtn.disabled = false; }, 3000);
+                    } else {
+                        alert("FAILED: Ad server unreachable. Reward cancelled.");
                     }
                     
-                    adStatus.innerText = "LOADING REWARD...";
-                    adStatus.style.color = "#facc15";
+                    setTimeout(() => { collectBtn.disabled = false; }, 2000);
                 }
             }, 1000);
         }
@@ -154,3 +151,4 @@
     </script>
 </body>
 </html>
+
