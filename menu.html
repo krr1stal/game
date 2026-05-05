@@ -7,11 +7,19 @@
     
     <style>
         body { 
-            margin: 0; background-color: #1a1613; color: white; 
-            font-family: 'Courier New', Courier, monospace; text-align: center; 
-            display: flex; flex-direction: column; height: 100vh; overflow: hidden; 
+            margin: 0; 
+            background-color: #1a1613; 
+            color: white; 
+            font-family: 'Courier New', Courier, monospace; 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            height: 100dvh; 
+            overflow: hidden; 
             -webkit-user-select: none;
         }
+
         .header { padding: 15px 20px; font-weight: bold; color: #facc15; font-size: 18px; text-align: left; }
         
         .balance-container { 
@@ -21,14 +29,14 @@
         }
         .amount { color: #ffffff; font-size: 20px; font-weight: bold; }
 
-        /* ИГРОВАЯ ЗОНА (ПОДНЯТА ВЫШЕ) */
+        /* ИГРОВАЯ ЗОНА */
         .game-area { 
             flex-grow: 1; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            padding-bottom: 20px; /* Отступ снизу для баннера */
+            padding-bottom: 190px; /* Увеличили отступ из-за поднятого баннера */
         }
         
         .pickaxe { font-size: 100px; margin-bottom: 10px; filter: drop-shadow(0 0 15px rgba(250,204,21,0.2)); }
@@ -41,24 +49,38 @@
         .collect-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #a16207; }
         .collect-btn:disabled { background: #555; box-shadow: none; color: #888; cursor: not-allowed; }
 
-        /* ПОЗИЦИЯ 3: ПОСТОЯННЫЙ БАННЕР */
+        /* ПОСТОЯННЫЙ БАННЕР - ПОДНЯТ ЕЩЕ ВЫШЕ */
         .banner-area {
+            position: fixed;
+            bottom: 110px; /* Подняли со 80px до 110px */
+            left: 0;
             width: 100%;
-            min-height: 60px;
-            background: rgba(0,0,0,0.2);
-            padding: 5px 0;
+            height: 60px;
             display: flex;
             justify-content: center;
             align-items: center;
+            z-index: 90;
         }
 
-        /* НИЖНЕЕ МЕНЮ (ПОЗИЦИИ 1 И 2) */
-        .nav-bar { background: #000; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #333; }
+        /* НИЖНЕЕ МЕНЮ */
+        .nav-bar { 
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 65px;
+            background: #000; 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center;
+            border-top: 1px solid #333; 
+            z-index: 100;
+        }
         .nav-item { color: #8b949e; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; width: 50%; cursor: pointer; }
         .nav-item.active { color: #facc15; }
-        .nav-icon { font-size: 22px; margin-bottom: 3px; }
+        .nav-icon { font-size: 24px; margin-bottom: 3px; }
 
-        /* ОКЛАДКА РЕКЛАМЫ (REWARDED) */
+        /* ОКНО REWARDED-РЕКЛАМЫ */
         #ad-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.98); z-index: 1000;
@@ -71,7 +93,7 @@
     <div id="ad-overlay">
         <div style="font-size: 40px;">💎</div>
         <h2 id="ad-status" style="color: #facc15; margin: 10px 0; font-size: 18px;">VERIFYING...</h2>
-        <div style="width: 300px; height: 250px; background: #000; margin: 10px 0;">
+        <div style="width: 300px; height: 250px; background: #000; margin: 10px 0; overflow: hidden;">
             <iframe id="ad-frame" data-aa='2436645' src='https://acceptable.a-ads.com/2436645/?size=300x250'
                     style='border:0; padding:0; width:300px; height:250px; display: block;'></iframe>
         </div>
@@ -116,7 +138,6 @@
 
         balanceDisplay.innerText = coins + " Coins";
 
-        // Проверка AdGuard DNS через пинг сервера рекламы
         async function verifyAdConnection() {
             try {
                 const response = await fetch('https://acceptable.a-ads.com/favicon.ico', { 
@@ -163,7 +184,7 @@
                     if (canEarn) {
                         addCoins();
                     } else {
-                        alert("Reward blocked! Disable AdGuard to earn coins.");
+                        alert("Reward blocked! Disable AdBlock/AdGuard to earn coins.");
                     }
                     
                     setTimeout(() => { collectBtn.disabled = false; }, 2000);
@@ -179,5 +200,4 @@
     </script>
 </body>
 </html>
-
 
